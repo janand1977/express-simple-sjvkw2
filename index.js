@@ -2,8 +2,10 @@ const express = require('express');
 const app = express();
 const port = 3010;
 const path = require('path');
+const { Client } = require('pg');
 
 const testDB = async () => {
+  console.log("db connect");
   const client = new Client({
     host: 'ec2-44-197-128-108.compute-1.amazonaws.com',
     port: '5432',
@@ -19,12 +21,14 @@ const testDB = async () => {
   ]);
   console.log(res.rows[0].connected);
   await client.end();
+  console.log("db connect ending");
 };
 
-app.use(express.static('static'));
+// app.use(express.static('static'));
 
-app.get('/', (req, res) => {
-  const { Client } = require('pg');
+app.get('/', async (req, res) => {
+  console.log('call');
+  await testDB();
   res.sendFile(path.resolve('pages/index.html'));
 });
 
